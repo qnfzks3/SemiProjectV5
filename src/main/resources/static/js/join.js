@@ -50,9 +50,6 @@ const pwdmsg = document.querySelector('#pwdmsg');
 const repasswd = document.querySelector('#repasswd');
 
 let modal = null;
-try {
-    modal = new bootstrap.Modal(zipmodal, {});
-} catch (e) { }
 
 joinbtn?.addEventListener('click', ()=>{
     if (joinfrm.userid.value == '') alert('아이디를 입력하세요!!');
@@ -66,7 +63,7 @@ joinbtn?.addEventListener('click', ()=>{
     else if (grecaptcha.getResponse() === '') alert('자동가입방지를 확인하세요!!');
     else if (joinfrm.checkuid.value === 'no') alert('아이디 중복 체크하세요!!');
     else {
-        joinfrm.zipcode.value = joinfrm.zip1.value + '-' + joinfrm.zip1.value;
+        joinfrm.zipcode.value = joinfrm.zip1.value + '-' + joinfrm.zip2.value;
         joinfrm.email.value = joinfrm.email1.value + '@' + joinfrm.email2.value;
         joinfrm.phone.value = joinfrm.tel1.value + '-' + joinfrm.tel2.value + '-' + joinfrm.tel3.value;
 
@@ -83,7 +80,13 @@ zpmdbtn?.addEventListener('click', () => {
     }
     dong.value = '';
 
-    modal.show();
+    let mymodal = null;
+    try {
+        mymodal = new bootstrap.Modal(zipmodal, {});
+        modal = mymodal;
+    } catch (e) { }
+
+    mymodal.show();
 });
 
 const showzipaddr = (jsons) => {
