@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">     <!--마이 바티스 이름 지정-->
+
+    <select id="selectBoard" statementType="PREPARED"
+            parameterType="int"
+            resultType="qnfzks3.springboot.semiprojectv5.model.Board">
+        select bno, title, userid, thumbs, views, regdate from boardv4
+        order by bno desc limit #{stbno}, 25
+    </select>
+
+    <!-- 동적 질의문으로 검색기능 구현 -->
+    <!-- 단, 컬럼명이나 테이블명에는 #{}가 아닌 ${}를 사용! -->
+    <select id="selectFindBoard" statementType="PREPARED" parameterType="map"
+            resultType="qnfzks3.springboot.semiprojectv5.model.Board">
+        select bno, title, userid, thumbs, views, regdate from boardv4
+
+        <if test="ftype != 'titcont'">  /*검색 기능 만들어보기 sql문으로 인풋창에 검색한 내용을 가져오자*/
+            where ${ftype} like concat('%',#{fkey}, '%')</if>
+             /*concat이렇게 하면 %가 앞뒤로 있어야하지만 여긴 뒤만있기에 다안나옴*/
+
+
+        <if test="ftype == 'titcont'">
+            where title like concat(#{fkey}, '%') or
+            content like concat(#{fkey}, '%')</if>
+
+        order by bno desc limit #{stbno}, 25
+    </select>
+
+    <select id="countBoard" statementType="PREPARED" resultType="int">
+        select ceil(count(bno)/25) cnt from boardv4
+    </select>
+
+    <select id="countFindBoard" statementType="PREPARED" parameterType="map" resultType="int">
+        /*검색할 시 아래 페이지 네이션이 사라진다. 이부분을 만들어보자! dao 에서 가져다 쓰도록
+        parameterType 받아올 타입  , resultType 내보내는 결과 타입 */
+
+        select ceil(count(bno)/25) from boardv4
+        <if test="ftype != 'titcont'">
+            where ${ftype} like concat('%',#{fkey},'%')
+        </if>
+
+
+        <if test="ftype == 'titcont'">
+            where title like concat('%',#{fkey},'%') or content like concat('%',#{fkey},'%')
+        </if>
+
+
+    </select>
+
+    <insert id="insertBoard" statementType="PREPARED" parameterType="qnfzks3.springboot.semiprojectv5.model.Board">
+        insert into boardv4(title,userid,content)
+            values (#{title},#{userid},#{content});
+    </insert>
+
+    <select id="selectOneBoard" statementType="PREPARED" parameterType="String" resultType="qnfzks3.springboot.semiprojectv5.model.Board">
+
+        select * from boardv4 where bno = #{bno}
+    </select>
+
+    <!--조회수 만들 때-->
+    <update id="countViewBoard" statementType="PREPARED" parameterType="String" >
+        update boardv4 set views= views+1 where bno = #{bno}
+    </update>
+
+
+</mapper>

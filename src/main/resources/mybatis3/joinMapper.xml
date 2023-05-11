@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="join">
+
+    <select id="findZipcode" statementType="PREPARED" parameterType="String"
+            resultType="qnfzks3.springboot.semiprojectv5.model.Zipcode">
+        select * from zipcode2013 where dong like #{dong}
+    </select>
+
+    <select id="selectOneUid" statementType="PREPARED" parameterType="String"
+            resultType="int">
+        select count(userid) cnt from member2 where userid = #{uid}
+    </select>
+
+    <insert id="insertMember" statementType="PREPARED"
+            parameterType="qnfzks3.springboot.semiprojectv5.model.Member">
+        insert into member2 (name, jumin1, jumin2, userid, passwd,
+            zipcode,addr1, addr2, email, phone) values
+            (#{name}, #{jumin1}, #{jumin2}, #{userid}, #{passwd},
+            #{zipcode}, #{addr1}, #{addr2}, #{email}, #{phone})
+    </insert>
+
+</mapper>
